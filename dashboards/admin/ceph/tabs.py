@@ -6,6 +6,7 @@ from horizon import tabs
 
 from openstack_dashboard import api
 
+import requests
 
 class OverviewTab(tabs.Tab):
     name = _("Overview")
@@ -13,7 +14,10 @@ class OverviewTab(tabs.Tab):
     template_name = "admin/ceph/_overview.html"
 
     def get_context_data(self, request):
-        return None
+        resp = requests.Session().request('GET', 
+                                          'http://10.0.120.141:5000/api/v0.1/status', 
+                                           headers = {'Accept': 'application/json', 'Content-Type': 'application/json'})
+        return {'resp': resp}
 
 class TopologyTab(tabs.Tab):
     name = _("Topology")
