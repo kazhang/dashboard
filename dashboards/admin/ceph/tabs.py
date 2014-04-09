@@ -15,6 +15,15 @@ class OverviewTab(tabs.Tab):
     def get_context_data(self, request):
         return None
 
+class TopologyTab(tabs.Tab):
+    name = _("Topology")
+    slug = "topology"
+    template_name = "admin/ceph/_topology.html"
+    preload = False
+
+    def get_context_data(self, request):
+        return None
+
 class CephTabs(tabs.TabGroup):
     slug = "ceph_tabs"
-    tabs = (OverviewTab,)
+    tabs = (OverviewTab, TopologyTab, )
