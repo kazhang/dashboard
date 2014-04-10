@@ -6,7 +6,10 @@ from horizon import tabs
 
 from openstack_dashboard import api
 
+from .tables import CRUSHRuleTable
+
 import requests
+import json
 
 class OverviewTab(tabs.Tab):
     name = _("Overview")
@@ -28,6 +31,21 @@ class TopologyTab(tabs.Tab):
     def get_context_data(self, request):
         return None
 
+class CRUSHRuleTab(tabs.TableTab):
+    name = _("CRUSH Rule")
+    slug = "CRUSHRule"
+    table_classes = (CRUSHRuleTable,)
+    template_name = "horizon/common/_detail_table.html"
+    preload = False
+
+    def get_CRUSHRule_data(self):
+        resp = requests.Session().request('GET', 
+                                          'http://10.0.120.141:5000/api/v0.1/osd/crush/rule/dump', 
+                                           headers = {'Accept': 'application/json', 'Content-Type': 'application/json'})
+        data = json.loads(resp.text)
+        data = data['output']
+        return data
+
 class QueryTab(tabs.Tab):
     name = _("Query")
     slug = "query"
@@ -39,4 +57,4 @@ class QueryTab(tabs.Tab):
 
 class CephTabs(tabs.TabGroup):
     slug = "ceph_tabs"
-    tabs = (OverviewTab, TopologyTab, QueryTab)
+    tabs = (OverviewTab, TopologyTab, CRUSHRuleTab, QueryTab)
