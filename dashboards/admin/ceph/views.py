@@ -35,15 +35,34 @@ class IndexView(tabs.TabView):
                 return node
         return {}
 
+    def get_obj_location(self, pool, object):
+        url = 'http://10.0.120.141:5000/api/v0.1/osd/map?pool=%s&object=%s' % (pool, object)
+        resp = requests.Session().request('GET',
+                                           url,
+                                           headers = {'Accept': 'application/json', 
+                                                      'Content-Type': 'application/json'})
+        resp = json.loads(resp.text)
+        return {'location': resp['output']}
+
     def get(self, request, *args, **kwargs):
         if self.request.GET.get("json", False):
             try:
-                osd_tree = self.get_osd_tree()
+                esd_tree = self.get_osd_tree()
             except:
                 osd_tree = {}
                 exceptions.handle(request,
                                   _('Unable to retrieve osd tree.'))
             data = json.dumps(osd_tree)
+            return http.HttpResponse(data)
+        elif self.request.GET.get("pool", False) != False:
+            try:
+                osd_loc = self.get_obj_location(self.request.GET.get("pool", False),
+                                                self.request.GET.get("object", False))
+            except:
+                osd_loc = {}
+                exceptions.handle(request,
+                                  _('Unable to retrieve object location.'))
+            data = json.dumps(osd_loc)
             return http.HttpResponse(data)
         else:
             return super(IndexView, self).get(request, *args, **kwargs)

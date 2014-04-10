@@ -1,0 +1,16 @@
+<p>Query</p>
+<form action="/horizon/admin/ceph/" method="GET" id="query-form">
+<input type="text" name="pool" placeholder="Pool" id="pool"/>
+<input type="text" name="object" placeholder="Object ID" id="object"/>
+<input type="submit" value="Search"/>
+</form>
+<div id="result"></div>
+<script>
+$("#query-form").submit(function(event){
+        var pool=$("#pool").val();
+        var obj=$("#object").val();
+        var url="/horizon/admin/ceph/?pool="+pool+"&object="+obj;
+        $("#result").load(url);
+        event.preventDefault();
+});
+</script>
