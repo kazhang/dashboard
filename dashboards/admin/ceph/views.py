@@ -47,7 +47,7 @@ class IndexView(tabs.TabView):
     def get(self, request, *args, **kwargs):
         if self.request.GET.get("json", False):
             try:
-                esd_tree = self.get_osd_tree()
+                osd_tree = self.get_osd_tree()
             except:
                 osd_tree = {}
                 exceptions.handle(request,
